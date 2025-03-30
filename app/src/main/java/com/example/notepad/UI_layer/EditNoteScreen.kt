@@ -33,14 +33,14 @@ fun EditNoteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp).background(color = Color.White)
+            .padding(16.dp)/*.background(color = Color.White)*/
     ) {
         OutlinedTextField(
             value = state.title.value,
             onValueChange = { state.title.value = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp).background(color = Color.White),
+                .padding(16.dp)/*.background(color = Color.White)*/,
             textStyle = TextStyle(
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
@@ -53,7 +53,7 @@ fun EditNoteScreen(
             value = state.description.value,
             onValueChange = { state.description.value = it },
             modifier = Modifier
-                .fillMaxWidth().background(color = Color.White)
+                .fillMaxWidth()/*.background(color = Color.White)*/
                 .weight(1f), colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -74,7 +74,8 @@ fun EditNoteScreen(
                 ))
                         navController.popBackStack()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().background(color = DarkBlue,
+                shape = RoundedCornerShape(20.dp))
         ) {
             Text("Update Note")
         }
