@@ -18,9 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.notepad.data.Note
 import com.example.notepad.ui.theme.DarkBlue
 import com.example.notepad.ui.theme.grey
 
@@ -33,14 +36,14 @@ fun EditNoteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)/*.background(color = Color.White)*/
+            .padding(16.dp)
     ) {
         OutlinedTextField(
             value = state.title.value,
             onValueChange = { state.title.value = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)/*.background(color = Color.White)*/,
+                .padding(16.dp),
             textStyle = TextStyle(
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
@@ -53,7 +56,7 @@ fun EditNoteScreen(
             value = state.description.value,
             onValueChange = { state.description.value = it },
             modifier = Modifier
-                .fillMaxWidth()/*.background(color = Color.White)*/
+                .fillMaxWidth()
                 .weight(1f), colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -81,3 +84,4 @@ fun EditNoteScreen(
         }
     }
 }
+

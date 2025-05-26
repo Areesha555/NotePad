@@ -1,9 +1,14 @@
 package com.example.notepad
 
+import DataStoreManager
+import android.os.Build
+import android.Manifest
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,6 +38,22 @@ import com.example.notepad.data.NoteDatabase
 import com.example.notepad.ui.theme.NotePadTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fine = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarse = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        val bluetooth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions[Manifest.permission.BLUETOOTH_CONNECT] ?: false
+        } else true
+
+        if (fine && coarse && bluetooth) {
+            // All permissions granted – safe to proceed with Bluetooth
+        } else {
+            Toast.makeText(this, "Required permissions not granted", Toast.LENGTH_SHORT).show()
+        }
+    }
     private val database by lazy {
         Room.databaseBuilder(
             applicationContext,
@@ -44,7 +65,11 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return NoteViewModel(database.dao) as T
+                    val application = this@MainActivity.application
+                    val dao = database.dao
+
+
+                    return NoteViewModel(application, dao) as T
                 }
             }
         }
@@ -53,6 +78,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        requestPermissions()
         setContent {
 
             window.statusBarColor = DarkBlue.toArgb()
@@ -75,6 +101,7 @@ class MainActivity : ComponentActivity() {
                                 state = state,
                                 navController = navController,
                                 onEvent = viewModel::onEvent
+
                             )
                         }
                         composable("AddNoteScreen") {
@@ -96,6 +123,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    private fun requestPermissions() {
+        val permissions = mutableListOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissions.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+
+        permissionLauncher.launch(permissions.toTypedArray())
     }
 }
 

@@ -17,4 +17,5 @@ interface NoteDao {
     fun getOrderByTitle(): Flow<List<Note>>
     @Query("select * from note order by dateAdded")
     fun getOrderByDate():Flow<List<Note>>
+
 }
